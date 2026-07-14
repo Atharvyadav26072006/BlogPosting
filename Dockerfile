@@ -11,4 +11,4 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
-ENTRYPOINT ["dotnet", "BlogPosting.dll"]
+ENTRYPOINT ["dotnet", "SyncSyntax.dll"]
