@@ -234,3 +234,4 @@ C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\obj\Debug\net10.0
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\obj\Debug\net10.0\compressed\le39343yg1-{0}-ge2yle0d7k-ge2yle0d7k.gz
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\obj\Debug\net10.0\compressed\2ysd1yo8yh-{0}-ofsgbleiid-ofsgbleiid.gz
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\obj\Debug\net10.0\compressed\wdn5kquz1f-{0}-ofsgbleiid-ofsgbleiid.gz
+C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\obj\Debug\net10.0\SyncSyntax.sourcelink.json
