@@ -4,8 +4,10 @@ using SyncSyntax.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// MVC services
 builder.Services.AddControllersWithViews();
 
+// PostgreSQL database connection
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(
@@ -19,6 +21,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         });
 });
 
+// Identity configuration
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.Password.RequireNonAlphanumeric = false;
@@ -30,6 +33,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
+// Login cookie configuration
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Auth/Login";
@@ -40,38 +44,53 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
+// Database migration आणि Admin तयार करणे
 try
 {
     using var scope = app.Services.CreateScope();
 
+    var services = scope.ServiceProvider;
+
     var dbContext =
-        scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        services.GetRequiredService<AppDbContext>();
 
     var userManager =
-        scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        services.GetRequiredService<UserManager<IdentityUser>>();
 
     var roleManager =
-        scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        services.GetRequiredService<RoleManager<IdentityRole>>();
 
-    // Create PostgreSQL tables
+    // Database migration run करा
     await dbContext.Database.MigrateAsync();
 
     const string adminRole = "Admin";
     const string adminEmail = "admin@gmail.com";
     const string adminPassword = "admin";
 
+    // Admin role तयार करा
     var existingAdminRole =
         await roleManager.FindByNameAsync(adminRole);
 
     if (existingAdminRole == null)
     {
-        await roleManager.CreateAsync(
+        var roleResult = await roleManager.CreateAsync(
             new IdentityRole(adminRole));
+
+        if (!roleResult.Succeeded)
+        {
+            foreach (var error in roleResult.Errors)
+            {
+                Console.WriteLine(
+                    $"Role error: {error.Description}");
+            }
+        }
     }
 
+    // Admin user शोधा
     var existingAdminUser =
         await userManager.FindByEmailAsync(adminEmail);
 
+    // Admin user नसेल तर तयार करा
     if (existingAdminUser == null)
     {
         var adminUser = new IdentityUser
@@ -81,23 +100,42 @@ try
             EmailConfirmed = true
         };
 
-        var result =
+        var userResult =
             await userManager.CreateAsync(
                 adminUser,
                 adminPassword);
 
-        if (result.Succeeded)
+        if (userResult.Succeeded)
         {
             await userManager.AddToRoleAsync(
                 adminUser,
                 adminRole);
+
+            Console.WriteLine(
+                "Admin user created successfully.");
         }
         else
         {
-            foreach (var error in result.Errors)
+            foreach (var error in userResult.Errors)
             {
-                Console.WriteLine(error.Description);
+                Console.WriteLine(
+                    $"Admin error: {error.Description}");
             }
+        }
+    }
+    else
+    {
+        // Admin user आहे पण role नसेल तर role add करा
+        var isAdmin =
+            await userManager.IsInRoleAsync(
+                existingAdminUser,
+                adminRole);
+
+        if (!isAdmin)
+        {
+            await userManager.AddToRoleAsync(
+                existingAdminUser,
+                adminRole);
         }
     }
 }
@@ -107,6 +145,7 @@ catch (Exception ex)
     Console.WriteLine(ex.ToString());
 }
 
+// Production error handling
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -114,13 +153,19 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// wwwroot मधील images, CSS आणि JS serve करण्यासाठी
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+// .NET static assets mapping
 app.MapStaticAssets();
 
+// Default route
 app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Post}/{action=Index}/{id?}")
