@@ -35,9 +35,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-using(var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
-   var  _userManager = scope.ServiceProvider .GetRequiredService<UserManager<IdentityUser>> ();
+    var _userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
     var _roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
 
@@ -48,7 +48,7 @@ using(var scope = app.Services.CreateScope())
 
     if (existingAdminRole == null)
     {
-        await _roleManager.CreateAsync(new IdentityRole("Admin"));    
+        await _roleManager.CreateAsync(new IdentityRole("Admin"));
     }
 
     var existingAdminUser = await _userManager.FindByEmailAsync(adminEmail);

@@ -8,7 +8,7 @@ namespace SyncSyntax.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "The category name is required ")]
-        [MaxLength(100, ErrorMessage =" Category name Cannot exceed 200 charaters")]    
+        [MaxLength(100, ErrorMessage = " Category name Cannot exceed 200 charaters")]
 
         public string Name { get; set; }
 

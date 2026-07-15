@@ -8,6 +8,7 @@ wwwroot\images\6989339b-c034-492e-82a1-19e0fae7103a.png
 wwwroot\images\719a6ae7-9a49-4eb1-a9aa-f5ee93859786.jpg
 wwwroot\images\7adabaab-bd19-447c-a9f0-21e4a035e4df.jpg
 wwwroot\images\7db93927-fecf-4dda-95ba-7a0f3fa35acc.jpg
+wwwroot\images\7ee6819c-1899-4431-a1b9-f421ffc04ee8.png
 wwwroot\images\99844755-d149-4344-9de8-9cd3aa165f27.jpg
 wwwroot\images\a4ac31df-8cd6-43bb-a739-9eb99fd401ee.jpg
 wwwroot\images\b2f461bf-3214-41d0-80da-2a8ba4896e03.png
@@ -124,6 +125,7 @@ C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\boots
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
@@ -139,6 +141,5 @@ C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\boots
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\js\site.js
-C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\css\site.css
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\favicon.ico
-C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\wwwroot\css\site.css
