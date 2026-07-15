@@ -1,52 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SyncSyntax.Models
 {
     public class Post
     {
-        [Key]
         public int Id { get; set; }
-        [Required(ErrorMessage = "The Title is Required")]
-        [MaxLength(400, ErrorMessage = "The Title cannot  exceed 400 characters")]
-        public String Title { get; set; }
 
-        [Required(ErrorMessage = "The Content  is Required")]
-        public string Content { get; set; }
+        [Required]
+        public string Title { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "The Author  is Required")]
-        [MaxLength(100, ErrorMessage = "The Name cannot  exceed 100 characters")]
-        public String Author { get; set; }
+        [Required]
+        public string Content { get; set; } = string.Empty;
 
-        [ValidateNever]
-        public string FeatureImagePath { get; set; }
+        [Required]
+        public string Author { get; set; } = string.Empty;
 
-        [DataType(DataType.Date)]
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-        [ForeignKey("Category")]
+        public string? FeatureImagePath { get; set; }
 
-        [DisplayName("Category")]
         public int CategoryId { get; set; }
 
-        [ValidateNever]
+        public Category? Category { get; set; }
 
-        public Category Category { get; set; }
-
-
-        [ValidateNever]
-        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-
-        //public ICollection<Comment> Comments { get; set; }
-
-
+        public List<Comment> Comments { get; set; } = new();
     }
-
-
-
-
-
-
 }
