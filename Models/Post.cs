@@ -25,8 +25,7 @@ namespace SyncSyntax.Models
         public string FeatureImagePath { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime PublishedDate { get; set; } = DateTime.Now;
-
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         [ForeignKey("Category")]
 
         [DisplayName("Category")]
