@@ -76,12 +76,16 @@
 
 </div>
 
-
 @section Scripts {
-    <script src="https://cdn.tiny.cloud/1/8v7ap9no879e3vf48t9bipzno7dfbo8dgefvm9kgcttuz3nu/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/bk25e0suer3ivmdg2e3ve2e0nis0je1f68ix9a02xemylf0m/tinymce/8/tinymce.min.js"
+            referrerpolicy="origin"
+            crossorigin="anonymous"></script>
+
     <script>
-          tinymce.init({
-          selector: 'textarea'
+        tinymce.init({
+            selector: '#Post_Content',
+            height: 400,
+            menubar: true
         });
     </script>
 }
