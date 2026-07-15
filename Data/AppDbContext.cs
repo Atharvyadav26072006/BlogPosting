@@ -112,7 +112,9 @@ namespace SyncSyntax.Data
                     Title = "Tech Post 1",
                     Content = "Content of Tech Post 1",
                     Author = "John Doe",
-                    PublishedDate = new DateTime(2023, 1, 1),
+                    PublishedDate = new DateTime(
+                             2026, 7, 15, 0, 0, 0,
+                                   DateTimeKind.Utc),
                     CategoryId = 1,
                     FeatureImagePath = "tech_image.jpg"
                 },
@@ -122,7 +124,9 @@ namespace SyncSyntax.Data
                     Title = "Health Post 1",
                     Content = "Content of Health Post 1",
                     Author = "Jane Doe",
-                    PublishedDate = new DateTime(2023, 1, 1),
+                    PublishedDate = new DateTime(
+    2026, 7, 15, 0, 0, 0,
+    DateTimeKind.Utc),
                     CategoryId = 2,
                     FeatureImagePath = "health_image.jpg"
                 },
@@ -132,7 +136,9 @@ namespace SyncSyntax.Data
                     Title = "Lifestyle Post 1",
                     Content = "Content of Lifestyle Post 1",
                     Author = "Alex Smith",
-                    PublishedDate = new DateTime(2023, 1, 1),
+                    PublishedDate = new DateTime(
+    2026, 7, 15, 0, 0, 0,
+    DateTimeKind.Utc),
                     CategoryId = 3,
                     FeatureImagePath = "lifestyle_image.jpg"
                 }

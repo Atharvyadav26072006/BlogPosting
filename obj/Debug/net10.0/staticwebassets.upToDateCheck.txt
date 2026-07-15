@@ -1,6 +1,7 @@
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\images\11a2ff90-9972-45e1-9231-ae32d417a1ca.jpg
+wwwroot\images\2cdf6f0f-7205-4a82-837e-8063a4d9ea16.png
 wwwroot\images\332f17b1-8e1d-45ff-b7e6-c42245fdb46e.jpg
 wwwroot\images\36f00004-384e-4967-a754-36b19027c091.jpg
 wwwroot\images\5ffdf55b-3529-4451-8a60-ea7b80f0104a.jpg
@@ -9,12 +10,14 @@ wwwroot\images\719a6ae7-9a49-4eb1-a9aa-f5ee93859786.jpg
 wwwroot\images\7adabaab-bd19-447c-a9f0-21e4a035e4df.jpg
 wwwroot\images\7db93927-fecf-4dda-95ba-7a0f3fa35acc.jpg
 wwwroot\images\7ee6819c-1899-4431-a1b9-f421ffc04ee8.png
+wwwroot\images\87ed240d-c536-4857-8697-af22803dfe37.png
 wwwroot\images\99844755-d149-4344-9de8-9cd3aa165f27.jpg
 wwwroot\images\a4ac31df-8cd6-43bb-a739-9eb99fd401ee.jpg
 wwwroot\images\b2f461bf-3214-41d0-80da-2a8ba4896e03.png
 wwwroot\images\ce18208c-f88b-4457-b91c-d51225b93e41.jpg
 wwwroot\images\d26bda29-72ba-4435-8d49-76f8ea512bfa.jpg
 wwwroot\images\e2b62916-6fec-4ae7-bc4d-ebea2abd3172.png
+wwwroot\images\e7010493-09bd-47c8-8e69-7b9949a29ba8.png
 wwwroot\images\f21bb963-b169-4467-86f0-763f1fd0df84.jpg
 wwwroot\images\f87a5a5b-08c2-4eca-bbfa-b6035593b2cc.jpg
 wwwroot\images\fbe37762-2748-4759-ac1c-c20acc05cc48.jpg
