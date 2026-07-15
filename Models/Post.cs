@@ -17,6 +17,8 @@ namespace SyncSyntax.Models
 
         public string? FeatureImagePath { get; set; }
 
+        public DateTime PublishedDate { get; set; } = DateTime.UtcNow;
+
         public int CategoryId { get; set; }
 
         public Category? Category { get; set; }
