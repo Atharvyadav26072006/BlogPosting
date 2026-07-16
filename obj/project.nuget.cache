@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "BnCQNqM0qyo=",
+  "dgSpecHash": "bO7r0XULCSs=",
   "success": true,
   "projectFilePath": "C:\\Users\\Rohit\\Desktop\\ASPNET 8 MVC CURD\\SyncSyntax\\SyncSyntax\\SyncSyntax.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Rohit\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Rohit\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
+    "C:\\Users\\Rohit\\.nuget\\packages\\cloudinarydotnet\\1.29.2\\cloudinarydotnet.1.29.2.nupkg.sha512",
     "C:\\Users\\Rohit\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Rohit\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\10.0.1\\microsoft.aspnetcore.identity.entityframeworkcore.10.0.1.nupkg.sha512",
     "C:\\Users\\Rohit\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\8.0.0\\microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",

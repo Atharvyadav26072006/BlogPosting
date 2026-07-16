@@ -6,7 +6,6 @@
 }
 
 <div class="text-center m-3">
-
     @if (ViewBag.Categories != null)
     {
         foreach (var category in ViewBag.Categories)
@@ -15,25 +14,20 @@
                asp-action="Index"
                asp-route-categoryId="@category.Id"
                class="badge bg-warning text-dark text-decoration-none ms-2">
-
                 @category.Name
             </a>
         }
     }
-
 </div>
 
 @if (User.IsInRole("Admin"))
 {
     <div class="text-end my-2">
-
         <a class="btn btn-primary"
            asp-controller="Post"
            asp-action="Create">
-
             Create New Post
         </a>
-
     </div>
 }
 
@@ -41,50 +35,37 @@
 
     @foreach (var post in Model)
     {
-        string imagePath;
+        var imagePath = string.IsNullOrWhiteSpace(post.FeatureImagePath)
+            ? "/images/default-post.jpg"
+            : post.FeatureImagePath.Replace("\\", "/");
 
-        if (string.IsNullOrWhiteSpace(post.FeatureImagePath))
+        if (!imagePath.StartsWith("/"))
         {
-            imagePath = "/images/default-post.jpg";
-        }
-        else
-        {
-            imagePath = post.FeatureImagePath.Replace("\\", "/");
-
-            if (!imagePath.StartsWith("/"))
-            {
-                imagePath = "/images/" + imagePath;
-            }
+            imagePath = "/images/" + imagePath;
         }
 
         var content = RemoveHtmlTagHelper.RemoveHtmlTags(post.Content ?? "");
 
         <div class="col">
-
             <div class="card h-100 border-0 shadow-lg rounded-1">
 
                 <img src="@imagePath"
                      class="card-img-top"
                      alt="@post.Title"
                      style="height:300px; object-fit:cover;"
-                     onerror="this.onerror=null; this.src='/images/default-post.jpg';" />
+                     onerror="this.onerror=null;this.src='/images/default-post.jpg';" />
 
                 <div class="card-body">
-
-                    <h5 class="card-title">
-                        @post.Title
-                    </h5>
+                    <h5 class="card-title">@post.Title</h5>
 
                     <p class="text-muted mb-2">
                         Published on @post.PublishedDate.ToString("MMM dd, yyyy")
                     </p>
 
                     <p class="card-text">
-
                         @(content.Length > 100
                             ? content.Substring(0, 100) + "....."
                             : content)
-
                     </p>
 
                     @if (post.Category != null)
@@ -93,31 +74,22 @@
                             @post.Category.Name
                         </span>
                     }
-
                 </div>
 
                 <div class="card-footer d-flex justify-content-between align-items-center">
-
                     <a class="btn btn-primary btn-sm"
                        asp-controller="Post"
                        asp-action="Detail"
                        asp-route-id="@post.Id">
-
                         Read More
                     </a>
 
-                    <div class="text-end">
-
-                        <div class="text-muted">
-                            By @post.Author
-                        </div>
-
+                    <div class="text-muted">
+                        By @post.Author
                     </div>
-
                 </div>
 
             </div>
-
         </div>
     }
 

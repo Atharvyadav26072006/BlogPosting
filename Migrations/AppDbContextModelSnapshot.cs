@@ -308,8 +308,7 @@ namespace SyncSyntax.Migrations
 
                     b.Property<string>("Author")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
@@ -319,7 +318,9 @@ namespace SyncSyntax.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("FeatureImagePath")
-                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FeatureImagePublicId")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("PublishedDate")
@@ -327,8 +328,7 @@ namespace SyncSyntax.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("character varying(400)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

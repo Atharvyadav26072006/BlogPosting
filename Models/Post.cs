@@ -24,5 +24,8 @@ namespace SyncSyntax.Models
         public Category? Category { get; set; }
 
         public List<Comment> Comments { get; set; } = new();
+
+        public string? FeatureImagePublicId { get; set; }
+
     }
 }
