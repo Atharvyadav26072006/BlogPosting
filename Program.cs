@@ -1,11 +1,19 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
+using SyncSyntax.Services;
+using SyncSyntax.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // MVC services
 builder.Services.AddControllersWithViews();
+
+// Cloudinary configuration
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("Cloudinary"));
+
+builder.Services.AddScoped<CloudinaryImageService>();
 
 // PostgreSQL database connection
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -44,7 +52,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-// Database migration आणि Admin तयार करणे
+// Run database migration and create Admin
 try
 {
     using var scope = app.Services.CreateScope();
@@ -60,14 +68,12 @@ try
     var roleManager =
         services.GetRequiredService<RoleManager<IdentityRole>>();
 
-    // Database migration run करा
     await dbContext.Database.MigrateAsync();
 
     const string adminRole = "Admin";
     const string adminEmail = "admin@gmail.com";
     const string adminPassword = "admin";
 
-    // Admin role तयार करा
     var existingAdminRole =
         await roleManager.FindByNameAsync(adminRole);
 
@@ -86,11 +92,9 @@ try
         }
     }
 
-    // Admin user शोधा
     var existingAdminUser =
         await userManager.FindByEmailAsync(adminEmail);
 
-    // Admin user नसेल तर तयार करा
     if (existingAdminUser == null)
     {
         var adminUser = new IdentityUser
@@ -125,7 +129,6 @@ try
     }
     else
     {
-        // Admin user आहे पण role नसेल तर role add करा
         var isAdmin =
             await userManager.IsInRoleAsync(
                 existingAdminUser,
@@ -145,7 +148,6 @@ catch (Exception ex)
     Console.WriteLine(ex.ToString());
 }
 
-// Production error handling
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -154,7 +156,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// wwwroot मधील images, CSS आणि JS serve करण्यासाठी
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -162,10 +163,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// .NET static assets mapping
 app.MapStaticAssets();
 
-// Default route
 app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Post}/{action=Index}/{id?}")
