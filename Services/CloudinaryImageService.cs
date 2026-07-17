@@ -2,7 +2,6 @@
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Options;
 using SyncSyntax.Settings;
-using System.Text.RegularExpressions;
 
 namespace SyncSyntax.Services
 {
@@ -10,117 +9,112 @@ namespace SyncSyntax.Services
     {
         private readonly Cloudinary _cloudinary;
 
-        private readonly string[] _allowedExtensions =
-        {
-            ".jpg",
-            ".jpeg",
-            ".png"
-        };
-
         public CloudinaryImageService(
-            IOptions<CloudinarySettings> settings)
+            IOptions<CloudinarySettings> options)
         {
-            var cloudinarySettings = settings.Value;
+            var settings = options.Value;
 
-            if (string.IsNullOrWhiteSpace(
-                    cloudinarySettings.CloudName) ||
-                string.IsNullOrWhiteSpace(
-                    cloudinarySettings.ApiKey) ||
-                string.IsNullOrWhiteSpace(
-                    cloudinarySettings.ApiSecret))
+            if (string.IsNullOrWhiteSpace(settings.CloudName))
             {
                 throw new InvalidOperationException(
-                    "Cloudinary settings are missing.");
+                    "Cloudinary CloudName is missing.");
+            }
+
+            if (string.IsNullOrWhiteSpace(settings.ApiKey))
+            {
+                throw new InvalidOperationException(
+                    "Cloudinary ApiKey is missing.");
+            }
+
+            if (string.IsNullOrWhiteSpace(settings.ApiSecret))
+            {
+                throw new InvalidOperationException(
+                    "Cloudinary ApiSecret is missing.");
             }
 
             var account = new Account(
-                cloudinarySettings.CloudName,
-                cloudinarySettings.ApiKey,
-                cloudinarySettings.ApiSecret);
+                settings.CloudName.Trim(),
+                settings.ApiKey.Trim(),
+                settings.ApiSecret.Trim());
 
             _cloudinary = new Cloudinary(account);
 
             _cloudinary.Api.Secure = true;
         }
 
-        public async Task<ImageUploadResultData>
-            UploadImageAsync(
-                IFormFile file,
-                string? postTitle)
+        public async Task<(string ImageUrl, string PublicId)>
+            UploadImageAsync(IFormFile image)
         {
-            if (file == null || file.Length == 0)
+            if (image == null || image.Length == 0)
             {
                 throw new InvalidOperationException(
-                    "The selected image is empty.");
+                    "Please select an image.");
             }
 
-            const long maximumFileSize =
-                5 * 1024 * 1024;
+            var allowedExtensions = new[]
+            {
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".webp"
+            };
 
-            if (file.Length > maximumFileSize)
+            var extension =
+                Path.GetExtension(image.FileName)
+                    .ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(extension))
             {
                 throw new InvalidOperationException(
-                    "The image must be smaller than 5 MB.");
+                    "Only JPG, JPEG, PNG and WEBP files are allowed.");
             }
-
-            var extension = Path
-                .GetExtension(file.FileName)
-                .ToLowerInvariant();
-
-            if (!_allowedExtensions.Contains(extension))
-            {
-                throw new InvalidOperationException(
-                    "Only JPG, JPEG and PNG images are allowed.");
-            }
-
-            var safeName = CreateSafeImageName(
-                postTitle,
-                file.FileName);
 
             await using var stream =
-                file.OpenReadStream();
+                image.OpenReadStream();
 
-            var uploadParameters =
-                new ImageUploadParams
-                {
-                    File = new FileDescription(
-                        file.FileName,
-                        stream),
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(
+                    image.FileName,
+                    stream),
 
-                    Folder = "blog-posts",
+                Folder = "syncsyntax/posts",
 
-                    PublicId = safeName,
+                UseFilename = true,
 
-                    Overwrite = false,
+                UniqueFilename = true,
 
-                    UniqueFilename = true,
+                Overwrite = false
+            };
 
-                    UseFilename = false
-                };
+            var uploadResult =
+                await _cloudinary.UploadAsync(uploadParams);
 
-            var result = await _cloudinary
-                .UploadAsync(uploadParameters);
-
-            if (result.Error != null)
+            if (uploadResult.Error != null)
             {
                 throw new InvalidOperationException(
-                    result.Error.Message);
+                    "Cloudinary error: " +
+                    uploadResult.Error.Message);
             }
 
-            if (result.SecureUrl == null)
+            if (uploadResult.SecureUrl == null)
             {
                 throw new InvalidOperationException(
                     "Cloudinary did not return an image URL.");
             }
 
-            return new ImageUploadResultData
-            {
-                ImageUrl =
-                    result.SecureUrl.ToString(),
+            Console.WriteLine(
+                "Cloudinary upload successful.");
 
-                PublicId =
-                    result.PublicId
-            };
+            Console.WriteLine(
+                $"Image URL: {uploadResult.SecureUrl}");
+
+            Console.WriteLine(
+                $"Public ID: {uploadResult.PublicId}");
+
+            return (
+                uploadResult.SecureUrl.ToString(),
+                uploadResult.PublicId);
         }
 
         public async Task DeleteImageAsync(
@@ -131,55 +125,15 @@ namespace SyncSyntax.Services
                 return;
             }
 
-            var deleteParameters =
+            var deleteParams =
                 new DeletionParams(publicId)
                 {
                     ResourceType =
-                        ResourceType.Image,
-
-                    Invalidate = true
+                        ResourceType.Image
                 };
 
             await _cloudinary.DestroyAsync(
-                deleteParameters);
+                deleteParams);
         }
-
-        private static string CreateSafeImageName(
-            string? postTitle,
-            string originalFileName)
-        {
-            var sourceName =
-                !string.IsNullOrWhiteSpace(postTitle)
-                    ? postTitle
-                    : Path.GetFileNameWithoutExtension(
-                        originalFileName);
-
-            sourceName =
-                sourceName.Trim().ToLowerInvariant();
-
-            sourceName = Regex.Replace(
-                sourceName,
-                @"[^a-z0-9]+",
-                "-");
-
-            sourceName =
-                sourceName.Trim('-');
-
-            if (string.IsNullOrWhiteSpace(sourceName))
-            {
-                sourceName = "post-image";
-            }
-
-            return $"{sourceName}-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
-        }
-    }
-
-    public class ImageUploadResultData
-    {
-        public string ImageUrl { get; set; } =
-            string.Empty;
-
-        public string PublicId { get; set; } =
-            string.Empty;
     }
 }

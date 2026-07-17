@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // MVC services
 builder.Services.AddControllersWithViews();
 
-// Cloudinary configuration
+// cloudinary configuration
 builder.Services.Configure<CloudinarySettings>(
     builder.Configuration.GetSection("Cloudinary"));
 
