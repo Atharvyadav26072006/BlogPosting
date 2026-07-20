@@ -39,7 +39,16 @@
             ? "/images/default-post.jpg"
             : post.FeatureImagePath.Replace("\\", "/");
 
-        if (!imagePath.StartsWith("/"))
+        var isCloudinaryUrl =
+            imagePath.StartsWith(
+                "http://",
+                StringComparison.OrdinalIgnoreCase)
+            || imagePath.StartsWith(
+                "https://",
+                StringComparison.OrdinalIgnoreCase);
+
+        // Supports old local images, while keeping Cloudinary URLs unchanged.
+        if (!isCloudinaryUrl && !imagePath.StartsWith("/"))
         {
             imagePath = "/images/" + imagePath;
         }

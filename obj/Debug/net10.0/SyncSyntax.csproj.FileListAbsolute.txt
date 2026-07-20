@@ -237,3 +237,4 @@ C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\obj\Debug\net10.0
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\obj\Debug\net10.0\SyncSyntax.pdb
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\obj\Debug\net10.0\SyncSyntax.genruntimeconfig.cache
 C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\obj\Debug\net10.0\ref\SyncSyntax.dll
+C:\Users\Rohit\Desktop\ASPNET 8 MVC CURD\SyncSyntax\SyncSyntax\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

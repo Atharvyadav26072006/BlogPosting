@@ -5,13 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
 using SyncSyntax.Models.ViewModels;
+using SyncSyntax.Services;
 
 namespace SyncSyntax.Controllers
 {
     public class PostController : Controller
     {
         private readonly AppDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly CloudinaryImageService _cloudinaryImageService;
 
         private readonly string[] _allowedExtensions =
         {
@@ -22,15 +23,11 @@ namespace SyncSyntax.Controllers
 
         public PostController(
             AppDbContext context,
-            IWebHostEnvironment webHostEnvironment)
+            CloudinaryImageService cloudinaryImageService)
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment;
+            _cloudinaryImageService = cloudinaryImageService;
         }
-
-        // -------------------------------------------------------
-        // POST LIST
-        // -------------------------------------------------------
 
         [HttpGet]
         public async Task<IActionResult> Index(int? categoryId)
@@ -56,10 +53,6 @@ namespace SyncSyntax.Controllers
             return View(posts);
         }
 
-        // -------------------------------------------------------
-        // POST DETAILS
-        // -------------------------------------------------------
-
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
@@ -76,10 +69,6 @@ namespace SyncSyntax.Controllers
             return View(post);
         }
 
-        // -------------------------------------------------------
-        // CREATE POST - GET
-        // -------------------------------------------------------
-
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
@@ -92,10 +81,6 @@ namespace SyncSyntax.Controllers
 
             return View(postViewModel);
         }
-
-        // -------------------------------------------------------
-        // CREATE POST - POST
-        // -------------------------------------------------------
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -149,13 +134,21 @@ namespace SyncSyntax.Controllers
             {
                 if (postViewModel.FeatureImage != null)
                 {
+                    var uploadedImage = await _cloudinaryImageService
+                        .UploadImageAsync(postViewModel.FeatureImage);
+
                     postViewModel.Post.FeatureImagePath =
-                        await UploadFileToFolder(
-                            postViewModel.FeatureImage);
+                        uploadedImage.ImageUrl;
+
+                    postViewModel.Post.FeatureImagePublicId =
+                        uploadedImage.PublicId;
                 }
                 else
                 {
                     postViewModel.Post.FeatureImagePath =
+                        string.Empty;
+
+                    postViewModel.Post.FeatureImagePublicId =
                         string.Empty;
                 }
 
@@ -201,10 +194,6 @@ namespace SyncSyntax.Controllers
             }
         }
 
-        // -------------------------------------------------------
-        // EDIT POST - GET
-        // -------------------------------------------------------
-
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
@@ -225,10 +214,6 @@ namespace SyncSyntax.Controllers
 
             return View(editViewModel);
         }
-
-        // -------------------------------------------------------
-        // EDIT POST - POST
-        // -------------------------------------------------------
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -299,12 +284,17 @@ namespace SyncSyntax.Controllers
 
                 if (editViewModel.FeatureImage != null)
                 {
-                    DeleteImageFile(
-                        existingPost.FeatureImagePath);
+                    await _cloudinaryImageService.DeleteImageAsync(
+                        existingPost.FeatureImagePublicId);
+
+                    var uploadedImage = await _cloudinaryImageService
+                        .UploadImageAsync(editViewModel.FeatureImage);
 
                     existingPost.FeatureImagePath =
-                        await UploadFileToFolder(
-                            editViewModel.FeatureImage);
+                        uploadedImage.ImageUrl;
+
+                    existingPost.FeatureImagePublicId =
+                        uploadedImage.PublicId;
                 }
 
                 await _context.SaveChangesAsync();
@@ -346,10 +336,6 @@ namespace SyncSyntax.Controllers
             }
         }
 
-        // -------------------------------------------------------
-        // DELETE POST - GET
-        // -------------------------------------------------------
-
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
@@ -366,10 +352,6 @@ namespace SyncSyntax.Controllers
             return View(postFromDatabase);
         }
 
-        // -------------------------------------------------------
-        // DELETE POST - POST
-        // -------------------------------------------------------
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -385,8 +367,8 @@ namespace SyncSyntax.Controllers
 
             try
             {
-                DeleteImageFile(
-                    postFromDatabase.FeatureImagePath);
+                await _cloudinaryImageService.DeleteImageAsync(
+                    postFromDatabase.FeatureImagePublicId);
 
                 _context.Posts.Remove(postFromDatabase);
 
@@ -410,10 +392,6 @@ namespace SyncSyntax.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-
-        // -------------------------------------------------------
-        // ADD COMMENT
-        // -------------------------------------------------------
 
         [HttpPost]
         [Authorize]
@@ -441,7 +419,6 @@ namespace SyncSyntax.Controllers
 
             try
             {
-                // PostgreSQL timestamp with time zone requires UTC
                 comment.CommentDate = DateTime.UtcNow;
 
                 if (string.IsNullOrWhiteSpace(comment.UserName))
@@ -477,10 +454,6 @@ namespace SyncSyntax.Controllers
             }
         }
 
-        // -------------------------------------------------------
-        // GET CATEGORY DROPDOWN
-        // -------------------------------------------------------
-
         private async Task<List<SelectListItem>>
             GetCategoriesAsync()
         {
@@ -492,80 +465,6 @@ namespace SyncSyntax.Controllers
                     Text = c.Name
                 })
                 .ToListAsync();
-        }
-
-        // -------------------------------------------------------
-        // UPLOAD IMAGE
-        // -------------------------------------------------------
-
-        private async Task<string> UploadFileToFolder(
-            IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-            {
-                throw new InvalidOperationException(
-                    "The selected image is empty.");
-            }
-
-            var extension = Path
-                .GetExtension(file.FileName)
-                .ToLowerInvariant();
-
-            if (!_allowedExtensions.Contains(extension))
-            {
-                throw new InvalidOperationException(
-                    "Only JPG, JPEG and PNG images are allowed.");
-            }
-
-            var fileName =
-                $"{Guid.NewGuid()}{extension}";
-
-            var imagesFolderPath = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                "images");
-
-            Directory.CreateDirectory(imagesFolderPath);
-
-            var filePath = Path.Combine(
-                imagesFolderPath,
-                fileName);
-
-            await using var fileStream = new FileStream(
-                filePath,
-                FileMode.Create);
-
-            await file.CopyToAsync(fileStream);
-
-            return $"/images/{fileName}";
-        }
-
-        // -------------------------------------------------------
-        // DELETE IMAGE
-        // -------------------------------------------------------
-
-        private void DeleteImageFile(string? imagePath)
-        {
-            if (string.IsNullOrWhiteSpace(imagePath))
-            {
-                return;
-            }
-
-            var fileName = Path.GetFileName(imagePath);
-
-            if (string.IsNullOrWhiteSpace(fileName))
-            {
-                return;
-            }
-
-            var filePath = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                "images",
-                fileName);
-
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
         }
     }
 }
